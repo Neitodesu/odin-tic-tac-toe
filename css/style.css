@@ -5,3 +5,26 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+body {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-container {
+  border: 2px solid fuchsia;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.square {
+  border: 1px solid red;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  height: 120px;
+  width: 120px;
+}
