@@ -18,18 +18,25 @@ body {
 }
 
 .main-container {
-  background-color: #e1e1e1;
-  border: 2px solid fuchsia;
+  background-color: #e1e1e166;
+  border: 4px solid #e1e1e1;
+  border-radius: 0.4rem;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  color: #1e1e1e;
+  color: #e1e1e1;
 }
 
 .square {
-  border: 1px solid red;
+  border: 1px solid #1f1f1f;
   display: grid;
   place-items: center;
   font-size: 2rem;
   height: 120px;
   width: 120px;
+}
+
+form {
+  display: flex;
+  font-size: 1.5rem;
+  flex-direction: column;
 }

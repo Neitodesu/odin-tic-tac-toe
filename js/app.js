@@ -1,5 +1,8 @@
 const resetBtn = document.querySelector('#resetBtn');
+const startBtn = document.querySelector('#startBtn');
 const container = document.querySelector('.main-container');
+const playerOneInput = document.querySelector('#name1');
+const playerTwoInput = document.querySelector('#name2');
 
 function createPlayer(name, char) {
   const getChar = () => {
@@ -12,16 +15,17 @@ function createPlayer(name, char) {
 }
 
 const createBoard = () => {
-  const player1 = createPlayer('Nate', 'X');
-  const player2 = createPlayer('Amaya', 'O');
+  let player1;
+  let player2;
   const status = document.querySelector('.game-status');
   let board = [];
+  let isStarted = false;
   let turn = false;
   let gameOver = false;
   let num = 9;
 
   const grid = () => {
-    status.textContent = `${player1.name}, your turn!`;
+    status.textContent = `Enter names to play!`;
     for (i = 0; i < 9; i++) {
       let div = document.createElement('div');
       div.classList.add('square');
@@ -31,7 +35,7 @@ const createBoard = () => {
       board.push(i);
 
       div.addEventListener('click', () => {
-        if (gameOver) {
+        if (gameOver || !isStarted) {
           return;
         }
         updateGrid(div);
@@ -142,6 +146,28 @@ const createBoard = () => {
       status.textContent = 'TIE GAME! Hit reset for new game';
     }
   };
+
+  const validatePlayers = () => {
+    if (playerOneInput.value == '' || playerTwoInput.value == '') {
+      return;
+    }
+    player1 = createPlayer(playerOneInput.value, 'X');
+    player2 = createPlayer(playerTwoInput.value, 'O');
+
+    playerOneInput.value = '';
+    playerTwoInput.value = '';
+    isStarted = true;
+    status.textContent = `${player1.name}, your turn!`;
+  };
+
+  const startGame = () => {
+    validatePlayers();
+  };
+
+  startBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    startGame();
+  });
 
   resetBtn.addEventListener('click', () => {
     window.location.reload();
