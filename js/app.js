@@ -148,6 +148,7 @@ const createBoard = () => {
   };
 
   const validatePlayers = () => {
+    //FIX: able to add more names while game is playing
     if (playerOneInput.value == '' || playerTwoInput.value == '') {
       return;
     }
