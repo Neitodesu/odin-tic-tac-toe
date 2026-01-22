@@ -7,6 +7,9 @@
 }
 
 body {
+  background-color: #1e1e1e;
+  color: #e1e1e1;
+  font-size: 2rem;
   height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -15,9 +18,11 @@ body {
 }
 
 .main-container {
+  background-color: #e1e1e1;
   border: 2px solid fuchsia;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  color: #1e1e1e;
 }
 
 .square {
