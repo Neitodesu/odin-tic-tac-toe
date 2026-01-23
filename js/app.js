@@ -135,7 +135,7 @@ const resetInputs = () => {
     gameStatus.textContent = 'You must enter names to play';
     return;
   }
-  if (playerOneInput.value.match(regex)) {
+  if (playerOneInput.value.match(regex) || playerTwoInput.value.match(regex)) {
     gameStatus.textContent = `No numbers or special characters allowed`;
     return;
   }
