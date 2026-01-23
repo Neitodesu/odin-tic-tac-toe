@@ -20,6 +20,7 @@ function gameController() {
   let player1;
   let player2;
   let board = [];
+  let empty = 9;
   let turn = false;
   let gameOver = false;
 
@@ -63,6 +64,9 @@ function gameController() {
       gameStatus.textContent = player2.winner();
       container.classList.add('floating');
     }
+    if (empty == 0 && !gameOver) {
+      gameStatus.textContent = 'TIE GAME!';
+    }
   };
 
   const toggleTurn = () => {
@@ -77,7 +81,6 @@ function gameController() {
 
   const updateBoardArray = (index, mark) => {
     board[index] = mark;
-    console.log(board);
   };
 
   const updateGrid = (div) => {
@@ -91,6 +94,8 @@ function gameController() {
     div.textContent = mark;
 
     toggleTurn();
+
+    empty--;
 
     checkWinner();
   };
@@ -113,6 +118,9 @@ function gameController() {
     }
     if (winStates.some((num) => num.every((index) => board[index] === '🇴'))) {
       gameOver = true;
+      updateUi();
+    }
+    if (empty == 0) {
       updateUi();
     }
   };
