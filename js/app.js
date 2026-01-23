@@ -1,8 +1,10 @@
+const container = document.querySelector('.main-container');
 const resetBtn = document.querySelector('#resetBtn');
 const startBtn = document.querySelector('#startBtn');
-const container = document.querySelector('.main-container');
-const playerOneInput = document.querySelector('#name1');
-const playerTwoInput = document.querySelector('#name2');
+const playerOneInput = document.querySelector('#first');
+const playerTwoInput = document.querySelector('#second');
+const gameStatus = document.querySelector('.game-status');
+let hasStarted = false;
 
 function createPlayer(name, char) {
   const getChar = () => {
@@ -14,18 +16,14 @@ function createPlayer(name, char) {
   return { name, getChar, winner };
 }
 
-const createBoard = () => {
+function gameController() {
   let player1;
   let player2;
-  const status = document.querySelector('.game-status');
   let board = [];
-  let isStarted = false;
   let turn = false;
   let gameOver = false;
-  let num = 9;
 
-  const grid = () => {
-    status.textContent = `Enter names to play!`;
+  const createGrid = () => {
     for (i = 0; i < 9; i++) {
       let div = document.createElement('div');
       div.classList.add('square');
@@ -35,7 +33,7 @@ const createBoard = () => {
       board.push(i);
 
       div.addEventListener('click', () => {
-        if (gameOver || !isStarted) {
+        if (gameOver || !hasStarted) {
           return;
         }
         updateGrid(div);
@@ -43,139 +41,115 @@ const createBoard = () => {
     }
   };
 
-  const updateGrid = (div) => {
-    if (!div.textContent == '') {
-      return;
+  const enablePlayer = () => {
+    player1 = createPlayer(playerOneInput.value, '❌');
+    player2 = createPlayer(playerTwoInput.value, '🇴');
+    hasStarted = true;
+  };
+
+  const updateUi = () => {
+    if (!gameOver) {
+      !turn
+        ? (gameStatus.textContent = `${player1.name}, your turn!`)
+        : (gameStatus.textContent = `${player2.name}, your turn!`);
     }
 
-    toggleTurn(turn);
-
-    if (turn) {
-      divIndex = div.getAttribute('id');
-      board[divIndex] = player1.getChar();
-      div.textContent = player1.getChar();
+    if (gameOver && turn) {
+      gameStatus.textContent = player1.winner();
+      container.classList.add('floating');
     }
 
-    if (!turn) {
-      divIndex = div.getAttribute('id');
-      board[divIndex] = player2.getChar();
-      div.textContent = player2.getChar();
+    if (gameOver && !turn) {
+      gameStatus.textContent = player2.winner();
+      container.classList.add('floating');
     }
-
-    num--;
-    checkWinner();
   };
 
   const toggleTurn = () => {
     if (turn == true) {
       turn = false;
-      status.textContent = `${player1.name}, your turn!`;
+      updateUi();
     } else {
       turn = true;
-      status.textContent = `${player2.name}, your turn!`;
+      updateUi();
     }
+  };
+
+  const updateBoardArray = (index, mark) => {
+    board[index] = mark;
+    console.log(board);
+  };
+
+  const updateGrid = (div) => {
+    if (!div.textContent == '') {
+      return;
+    }
+    const index = div.id;
+    const mark = turn ? player2.getChar() : player1.getChar();
+
+    updateBoardArray(index, mark);
+    div.textContent = mark;
+
+    toggleTurn();
+
+    checkWinner();
   };
 
   const checkWinner = () => {
-    if (board[0] == board[1] && board[0] == board[2]) {
-      if (turn == true) {
-        status.textContent = player1.winner();
-      } else {
-        status.textContent = player2.winner();
-      }
+    const winStates = [
+      [0, 1, 2],
+      [0, 3, 6],
+      [0, 4, 8],
+      [3, 4, 5],
+      [6, 7, 8],
+      [1, 4, 7],
+      [2, 5, 8],
+      [2, 4, 6],
+    ];
+
+    if (winStates.some((num) => num.every((index) => board[index] === '❌'))) {
       gameOver = true;
+      updateUi();
     }
-    if (board[0] == board[3] && board[0] == board[6]) {
-      if (turn == true) {
-        status.textContent = player1.winner();
-      } else {
-        status.textContent = player2.winner();
-      }
+    if (winStates.some((num) => num.every((index) => board[index] === '🇴'))) {
       gameOver = true;
-    }
-    if (board[0] == board[4] && board[0] == board[8]) {
-      if (turn == true) {
-        status.textContent = player1.winner();
-      } else {
-        status.textContent = player2.winner();
-      }
-      gameOver = true;
-    }
-    if (board[3] == board[4] && board[3] == board[5]) {
-      if (turn == true) {
-        status.textContent = player1.winner();
-      } else {
-        status.textContent = player2.winner();
-      }
-      gameOver = true;
-    }
-    if (board[6] == board[7] && board[6] == board[8]) {
-      if (turn == true) {
-        status.textContent = player1.winner();
-      } else {
-        status.textContent = player2.winner();
-      }
-      gameOver = true;
-    }
-    if (board[1] == board[4] && board[1] == board[7]) {
-      if (turn == true) {
-        status.textContent = player1.winner();
-      } else {
-        status.textContent = player2.winner();
-      }
-      gameOver = true;
-    }
-    if (board[2] == board[5] && board[2] == board[8]) {
-      if (turn == true) {
-        status.textContent = player1.winner();
-      } else {
-        status.textContent = player2.winner();
-      }
-      gameOver = true;
-    }
-    if (board[2] == board[4] && board[2] == board[6]) {
-      if (turn == true) {
-        status.textContent = player1.winner();
-      } else {
-        status.textContent = player2.winner();
-      }
-      gameOver = true;
-    }
-    if (num == 0) {
-      gameOver = true;
-      status.textContent = 'TIE GAME! Hit reset for new game';
+      updateUi();
     }
   };
 
-  const validatePlayers = () => {
-    //FIX: able to add more names while game is playing
-    if (playerOneInput.value == '' || playerTwoInput.value == '') {
-      return;
-    }
-    player1 = createPlayer(playerOneInput.value, 'X');
-    player2 = createPlayer(playerTwoInput.value, 'O');
+  return { createGrid, updateUi, enablePlayer };
+}
 
-    playerOneInput.value = '';
-    playerTwoInput.value = '';
-    isStarted = true;
-    status.textContent = `${player1.name}, your turn!`;
-  };
+const resetInputs = () => {
+  const inputs = document.querySelector('.inputs');
+  const regex = /[0-9!@#$%^&*(){}<>\-|/?.,\\'';:""``~+_=]/g;
+  if (playerOneInput.value == '' || playerTwoInput.value == '') {
+    gameStatus.textContent = 'You must enter names to play';
+    return;
+  }
+  if (playerOneInput.value.match(regex)) {
+    gameStatus.textContent = `No numbers or special characters allowed`;
+    return;
+  }
 
-  const startGame = () => {
-    validatePlayers();
-  };
-
-  startBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    startGame();
-  });
-
-  resetBtn.addEventListener('click', () => {
-    window.location.reload();
-  });
-
-  return { grid };
+  control.enablePlayer();
+  control.updateUi();
+  playerOneInput.value = '';
+  playerTwoInput.value = '';
+  inputs.classList.add('hidden');
 };
 
-const gameBoard = createBoard();
-gameBoard.grid();
+const control = gameController();
+
+control.createGrid();
+
+startBtn.addEventListener('click', () => {
+  if (hasStarted) {
+    return;
+  }
+  resetInputs();
+});
+
+resetBtn.addEventListener('click', () => {
+  window.location.reload();
+});
