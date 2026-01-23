@@ -43,8 +43,8 @@ function gameController() {
   };
 
   const enablePlayer = () => {
-    player1 = createPlayer(playerOneInput.value, '❌');
-    player2 = createPlayer(playerTwoInput.value, '🇴');
+    player1 = createPlayer(playerOneInput.value, 'X');
+    player2 = createPlayer(playerTwoInput.value, 'O');
     hasStarted = true;
   };
 
@@ -112,11 +112,11 @@ function gameController() {
       [2, 4, 6],
     ];
 
-    if (winStates.some((num) => num.every((index) => board[index] === '❌'))) {
+    if (winStates.some((num) => num.every((index) => board[index] === 'X'))) {
       gameOver = true;
       updateUi();
     }
-    if (winStates.some((num) => num.every((index) => board[index] === '🇴'))) {
+    if (winStates.some((num) => num.every((index) => board[index] === 'O'))) {
       gameOver = true;
       updateUi();
     }
